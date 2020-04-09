@@ -4,6 +4,7 @@ import React, {
   useContext,
   useReducer,
   useCallback,
+  useMemo,
 } from "react";
 
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -51,9 +52,9 @@ const Speakers = ({}) => {
     setSpeakingSaturday(!speakingSaturday);
   };
 
-  const speakerListFiltered = isLoading
-    ? []
-    : speakerList
+  const newSpeakerList = useMemo(
+    () =>
+      speakerList
         .filter(
           ({ sat, sun }) => (speakingSaturday && sat) || (speakingSunday && sun)
         )
@@ -65,7 +66,11 @@ const Speakers = ({}) => {
             return 1;
           }
           return 0;
-        });
+        }),
+    [speakerList, speakingSaturday, speakingSunday]
+  );
+
+  const speakerListFiltered = isLoading ? [] : newSpeakerList;
 
   const handleChangeSunday = () => {
     setSpeakingSunday(!speakingSunday);
